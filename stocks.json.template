@@ -1,0 +1,10 @@
+[
+  {
+    "ticker": "ABCD",
+    "averagePrice": 100.0
+  },
+  {
+    "ticker": "EFGH",
+    "averagePrice": 50.0
+  }
+]

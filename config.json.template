@@ -1,0 +1,8 @@
+{
+    "mailgun": {
+        "apiKey": "",
+        "sender": "name <name@example.com>",
+        "receiver": "name <name@example.com>",
+        "domain": "name@example.com"
+    }
+}

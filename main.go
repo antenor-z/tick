@@ -46,7 +46,7 @@ func main() {
 	}
 
 	mailContent += "</span></body></html>"
-	cleanContent += "end"
+	cleanContent += "end\n\n\n\n"
 	fmt.Print(cleanContent)
 
 	// sendMail.SendMail(

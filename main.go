@@ -16,33 +16,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	mailContent := "<span style='color: black'>"
-
+	mailContent := "<html><body><span style='color: black'>"
 	for _, stock := range stocks {
-		currentPrice, err := external.FetchPrice(stock.Ticker)
+		price, err := external.FetchPrice(stock.Ticker, stock.AveragePrice)
 		if err != nil {
 			mailContent += fmt.Sprintf("%s: (Error fetching current price: %v)<br />\n", stock.Ticker, err)
 			continue
 		}
 
-		change := ((currentPrice - stock.AveragePrice) / stock.AveragePrice) * 100
-		var color string
-		if change > 0 {
-			color = "green"
-		} else if change < 0 {
-			color = "red"
-		} else {
-			color = "gray"
-		}
-
 		tickerSafe := strings.ReplaceAll(stock.Ticker, ".SA", "")
 		mailContent += fmt.Sprintf("<strong>%s</strong><br />\n", tickerSafe)
-		mailContent += fmt.Sprintf("&nbsp;&nbsp;Avg Price: R$ %.2f<br />\n", stock.AveragePrice)
-		mailContent += fmt.Sprintf("&nbsp;&nbsp;Now Price: R$ %.2f<br />\n", currentPrice)
-		mailContent += fmt.Sprintf("&nbsp;&nbsp;Change: <span style='color:%s'>%.2f%%</span><br /><br />\n\n", color, change)
+		mailContent += fmt.Sprintf("&nbsp;&nbsp;AVG: R$ %.2f<br />\n", stock.AveragePrice)
+		mailContent += fmt.Sprintf("&nbsp;&nbsp;NOW: R$ %.2f<br />\n", price.Now.Price)
+		mailContent += fmt.Sprintf("&nbsp;&nbsp;7DAYSAGO: R$ %.2f<br />\n", price.SevenDaysAgo.Price)
+		mailContent += fmt.Sprintf("&nbsp;&nbsp;AVG x NOW: <span style='color:%s'>%.2f%%</span><br />\n", price.Now.Color, price.Now.Change)
+		mailContent += fmt.Sprintf("&nbsp;&nbsp;7DAYSAGO x NOW: <span style='color:%s'>%.2f%%</span><br /><br />\n\n", price.SevenDaysAgo.Color, price.SevenDaysAgo.Change)
 	}
 
-	mailContent += "</span>"
+	mailContent += "</span></body></html>"
 
 	sendMail.SendMail(
 		sendMail.Email{

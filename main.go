@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 	"tick/external"
-	"tick/sendMail"
 	"time"
 )
 
@@ -17,6 +16,8 @@ func main() {
 	}
 
 	mailContent := "<html><body><span style='color: black'>"
+	cleanContent := "################\n"
+	cleanContent += fmt.Sprintf("Tick Report %s\n", time.Now().Format("2006-01-02 15:04"))
 	for _, stock := range stocks {
 		price, err := external.FetchPrice(stock.Ticker, stock.AveragePrice)
 		if err != nil {
@@ -35,15 +36,24 @@ func main() {
 			mailContent += fmt.Sprintf("&nbsp;&nbsp;https://finance.yahoo.com/quote/%s<br />\n", stock.Ticker)
 		}
 		mailContent += "<br />\n"
+
+		cleanContent += fmt.Sprintf("-> %s\n", stock.Ticker)
+		cleanContent += fmt.Sprintf("  AVG: R$ %.2f\n", stock.AveragePrice)
+		cleanContent += fmt.Sprintf("  NOW: R$ %.2f\n", price.Now.Price)
+		cleanContent += fmt.Sprintf("  7DAYSAGO: R$ %.2f\n", price.SevenDaysAgo.Price)
+		cleanContent += fmt.Sprintf("  AVG x NOW: %.2f%%\n", price.Now.Change)
+		cleanContent += fmt.Sprintf("  7DAYSAGO x NOW: %.2f%%\n", price.SevenDaysAgo.Change)
 	}
 
 	mailContent += "</span></body></html>"
+	cleanContent += "end"
+	fmt.Print(cleanContent)
 
-	sendMail.SendMail(
-		sendMail.Email{
-			To:      sendMail.GetConfig().Mailgun.Receiver,
-			Subject: fmt.Sprintf("Tick Report %s", time.Now().Format("2006-01-02 15:04")),
-			Text:    mailContent,
-		},
-		sendMail.GetConfig())
+	// sendMail.SendMail(
+	// 	sendMail.Email{
+	// 		To:      sendMail.GetConfig().Mailgun.Receiver,
+	// 		Subject: fmt.Sprintf("Tick Report %s", time.Now().Format("2006-01-02 15:04")),
+	// 		Text:    mailContent,
+	// 	},
+	// 	sendMail.GetConfig())
 }

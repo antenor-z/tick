@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"tick/external"
+	"tick/sendMail"
 	"time"
 )
 
@@ -49,11 +50,11 @@ func main() {
 	cleanContent += "end\n\n\n\n"
 	fmt.Print(cleanContent)
 
-	// sendMail.SendMail(
-	// 	sendMail.Email{
-	// 		To:      sendMail.GetConfig().Mailgun.Receiver,
-	// 		Subject: fmt.Sprintf("Tick Report %s", time.Now().Format("2006-01-02 15:04")),
-	// 		Text:    mailContent,
-	// 	},
-	// 	sendMail.GetConfig())
+	sendMail.SendMail(
+		sendMail.Email{
+			To:      sendMail.GetConfig().Mailgun.Receiver,
+			Subject: fmt.Sprintf("Tick Report %s", time.Now().Format("2006-01-02 15:04")),
+			Text:    mailContent,
+		},
+		sendMail.GetConfig())
 }

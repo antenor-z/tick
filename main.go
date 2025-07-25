@@ -30,7 +30,11 @@ func main() {
 		mailContent += fmt.Sprintf("&nbsp;&nbsp;NOW: R$ %.2f<br />\n", price.Now.Price)
 		mailContent += fmt.Sprintf("&nbsp;&nbsp;7DAYSAGO: R$ %.2f<br />\n", price.SevenDaysAgo.Price)
 		mailContent += fmt.Sprintf("&nbsp;&nbsp;AVG x NOW: <span style='color:%s'>%.2f%%</span><br />\n", price.Now.Color, price.Now.Change)
-		mailContent += fmt.Sprintf("&nbsp;&nbsp;7DAYSAGO x NOW: <span style='color:%s'>%.2f%%</span><br /><br />\n\n", price.SevenDaysAgo.Color, price.SevenDaysAgo.Change)
+		mailContent += fmt.Sprintf("&nbsp;&nbsp;7DAYSAGO x NOW: <span style='color:%s'>%.2f%%</span><br />\n", price.SevenDaysAgo.Color, price.SevenDaysAgo.Change)
+		if !strings.HasPrefix(stock.Ticker, "BTC") {
+			mailContent += fmt.Sprintf("&nbsp;&nbsp;https://finance.yahoo.com/quote/%s<br />\n", stock.Ticker)
+		}
+		mailContent += "<br />\n"
 	}
 
 	mailContent += "</span></body></html>"
